@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lernprogramm Mathe Schulhaus Kreuzbühl</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: inline-block;
+        }
+        h1 {
+            color: #333;
+        }
+        #aufgabe {
+            font-size: 28px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        input {
+            font-size: 20px;
+            padding: 10px;
+            border: 2px solid #333;
+            border-radius: 5px;
+            width: 80px;
+            text-align: center;
+        }
+        button {
+            font-size: 20px;
+            padding: 10px 20px;
+            margin-top: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #meldung {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: red;
+        }
+        .level-buttons button {
+            margin: 5px;
+            background-color: #007bff;
+        }
+        .level-buttons button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Lernprogramm Mathe Schulhaus Kreuzbühl</h1>
+        <div class="level-buttons">
+            <button onclick="setLevel(3)">3. Klasse</button>
+            <button onclick="setLevel(4)">4. Klasse</button>
+            <button onclick="setLevel(5)">5. Klasse</button>
+            <button onclick="setLevel(6)">6. Klasse</button>
+        </div>
+        <div id="aufgabe"></div>
+        <input type="number" id="antwort" placeholder="Antwort" onkeypress="handleKeyPress(event)">
+        <button onclick="ueberpruefen()">Überprüfen</button>
+        <p id="meldung"></p>
+    </div>
+
+    <script>
+        let aufgaben = [];
+        let level = 6;
+
+        function generateAufgaben(level) {
+            aufgaben = [];
+            let maxNum = level * 50;
+            let minNum = level * 10;
+            for (let i = 0; i < 200; i++) {
+                let num1 = Math.floor(Math.random() * maxNum) + minNum;
+                let num2 = Math.floor(Math.random() * maxNum) + minNum / 2;
+                let operations = ['+', '-', '*', '/'];
+                let operation = operations[Math.floor(Math.random() * operations.length)];
+                let frage, loesung;
+
+                switch (operation) {
+                    case '+': frage = `${num1} + ${num2}`; loesung = num1 + num2; break;
+                    case '-': frage = `${num1} - ${num2}`; loesung = num1 - num2; break;
+                    case '*': frage = `${num1} × ${num2}`; loesung = num1 * num2; break;
+                    case '/':
+                        num1 = num2 * Math.floor(num1 / num2);
+                        frage = `${num1} ÷ ${num2}`;
+                        loesung = num1 / num2;
+                        break;
+                }
+
+                aufgaben.push({ frage, loesung });
+            }
+            index = 0;
+            neueAufgabe();
+        }
+        
+        let index = 0;
+
+        function neueAufgabe() {
+            if (index < aufgaben.length) {
+                document.getElementById("aufgabe").innerText = aufgaben[index].frage;
+                document.getElementById("meldung").innerText = "";
+                document.getElementById("antwort").value = "";
+            } else {
+                document.getElementById("aufgabe").innerText = "Glückwunsch! Du hast alle Aufgaben gelöst.";
+                document.getElementById("antwort").style.display = "none";
+                document.getElementById("meldung").style.display = "none";
+            }
+        }
+
+        function ueberpruefen() {
+            let antwort = parseInt(document.getElementById("antwort").value);
+            if (antwort === aufgaben[index].loesung) {
+                index++;
+                neueAufgabe();
+            } else {
+                document.getElementById("meldung").innerText = "Falsch, versuche es noch einmal!";
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                ueberpruefen();
+            }
+        }
+
+        function setLevel(selectedLevel) {
+            level = selectedLevel;
+            generateAufgaben(level);
+        }
+
+        generateAufgaben(level);
+    </script>
+</body>
+</html>
